@@ -1,31 +1,27 @@
-var pg = require('pg');
+var express = require('express');
+var bodyParser = require('body-parser');
+var parser = bodyParser.urlencoded({extended: false})
 
-var config = {
-  user: 'postgres',
-  password: 'khoapham',
-  database: 'USER',
-  host: 'localhost',
-  port: 5432,
-  max: 10,
-  idleTimeoutMillies: 30000
-}
+var app = express();
+app.listen(3000);
+app.set('view engine', 'ejs');
+app.set('views', './views');
+var insert = require('./db');
+app.use(express.static('public'));
 
-var pool = new pg.Pool(config);
+app.get('/', function(req, res){
+  res.render('home');
+});
 
-function queryDB(sql, cb){
-  pool.connect(function(err, client, done){
-    if(err){
-      console.log('LOI KET NOI ' + err);
-    }else{
-      client.query(sql, function(err, result){
-        cb(result, err);
-      });
-    }
+app.post('/dangky', parser, function(req, res){
+  var username = req.body.username;
+  var password = req.body.password;
+  var address = req.body.address;
+
+  insert(username, password, address, function(){
+    res.send('Dang ky khong thanh cong');
+  }, function(){
+    res.send('Dang ky thanh cong');
   });
-}
 
-
-
-pool.on('error', function(err, client){
-  console.log('LOI:: ' + err);
 });
