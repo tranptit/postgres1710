@@ -24,10 +24,6 @@ function queryDB(sql, cb){
   });
 }
 
-queryDB('SELECT * FROM "User"', function(result){
-  console.log(result);
-});
-
 
 
 pool.on('error', function(err, client){
