@@ -5,10 +5,11 @@
     <title>Dang ky</title>
   </head>
   <body>
-    <form action="/dangky" method="post">
+    <form action="/dangky" method="post" enctype="multipart/form-data">
       <input type="text" name="username" placeholder="username"><br><br>
       <input type="password" name="password" placeholder="password"><br><br>
       <input type="text" name="address" placeholder="address"><br><br>
+      <input type="file" name="avatar" value=""><br><br>
       <input type="submit" value="Sign In">
     </form>
   </body>

@@ -28,9 +28,9 @@ pool.on('error', function(err, client){
   console.log('LOI:: ' + err);
 });
 
-function insertUser(username, password, address, f1, f2){
-  var sql = `INSERT INTO "User"(username, password, address)
-            VALUES ('${username}','${password}','${address}')`;
+function insertUser(username, password, address, image, f1, f2){
+  var sql = `INSERT INTO "User"(username, password, address, image)
+            VALUES ('${username}','${password}','${address}','${image}')`;
   queryDB(sql, function(err, result){
       if(err){
         console.log('LOI ' + err);

@@ -24,6 +24,7 @@ app.get('/dangNhap', function(req, res){
   `)
 });
 
+
 app.post('/xulydangnhap', parser, function(req, res){
   var username = req.body.username;
   var password = req.body.password;
@@ -36,15 +37,18 @@ app.post('/xulydangnhap', parser, function(req, res){
   })
 });
 
+var upload = require('./upload.js');
 app.post('/dangky', parser, function(req, res){
-  var username = req.body.username;
-  var password = req.body.password;
-  var address = req.body.address;
+  upload(req, res, function(err){
+    var username = req.body.username;
+    var password = req.body.password;
+    var address = req.body.address;
+    var image = req.file.filename;
 
-  insert(username, password, address, function(){
-    res.send('Dang ky khong thanh cong');
-  }, function(){
-    res.send('Dang ky thanh cong');
+    insert(username, password, address, image, function(){
+      res.send('Dang ky khong thanh cong');
+    }, function(){
+      res.send('Dang ky thanh cong');
+    });
   });
-
 });
