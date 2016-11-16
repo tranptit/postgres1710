@@ -17,14 +17,10 @@ function queryDB(sql, cb){
     if(err){
       console.log('LOI KET NOI ' + err);
     }else{
-      client.query(sql, function(err, result){
-        cb(result, err);
-      });
+      client.query(sql, cb);
     }
   });
 }
-
-
 
 pool.on('error', function(err, client){
   console.log('LOI:: ' + err);
@@ -33,7 +29,7 @@ pool.on('error', function(err, client){
 function insertUser(username, password, address, f1, f2){
   var sql = `INSERT INTO "User"(username, password, address)
             VALUES ('${username}','${password}','${address}')`;
-  queryDB(sql, function(result, err){
+  queryDB(sql, function(err, result){
       if(err){
         console.log('LOI ' + err);
         f1();
