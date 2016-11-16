@@ -22,6 +22,8 @@ function queryDB(sql, cb){
   });
 }
 
+//SELECT * FROM "User" WHERE username = 'xyz' AND password = 'abc'
+
 pool.on('error', function(err, client){
   console.log('LOI:: ' + err);
 });
@@ -40,4 +42,21 @@ function insertUser(username, password, address, f1, f2){
   });
 }
 
-module.exports = insertUser;
+function login(username, password, onFail, onSuccess){
+  var sql = `SELECT * FROM "User" WHERE username='${username}' AND
+  password='${password}'`;
+  queryDB(sql, function(err, result){
+    if(err){
+      console.log(err);
+    }else{
+      if(result.rowCount == 1){
+        onSuccess();
+      }else{
+        onFail();
+      }
+    }
+  });
+}
+
+module.exports.insert = insertUser;
+module.exports.login = login;
