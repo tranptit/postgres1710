@@ -37,7 +37,7 @@ app.post('/xulydangnhap', parser, function(req, res){
   })
 });
 
-var upload = require('./upload.js');
+var upload = require('./upload.js')('avatar');
 app.post('/dangky', parser, function(req, res){
   upload(req, res, function(err){
     var username = req.body.username;

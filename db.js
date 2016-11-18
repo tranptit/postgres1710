@@ -1,5 +1,5 @@
 var pg = require('pg');
-
+var encrypt = require('./crypto').encrypt;
 var config = {
   user: 'postgres',
   password: 'khoapham',
@@ -30,7 +30,7 @@ pool.on('error', function(err, client){
 
 function insertUser(username, password, address, image, f1, f2){
   var sql = `INSERT INTO "User"(username, password, address, image)
-            VALUES ('${username}','${password}','${address}','${image}')`;
+            VALUES ('${username}','${encrypt(password)}','${address}','${image}')`;
   queryDB(sql, function(err, result){
       if(err){
         console.log('LOI ' + err);
@@ -60,3 +60,13 @@ function login(username, password, onFail, onSuccess){
 
 module.exports.insert = insertUser;
 module.exports.login = login;
+
+function a(){
+  var b;
+  setTimeout(function(){
+    b = 5;
+    return b;
+  }, 1000);
+}
+
+var c = a()
