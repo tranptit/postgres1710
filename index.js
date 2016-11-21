@@ -10,7 +10,7 @@ var sess = session(
     secret: '2wh73&5g3hG67342',
     resave: false,
     saveUninitialized: false,
-    cookie: {maxAge: 10000}
+    cookie: {maxAge: 5000}
   }
 );
 
@@ -23,6 +23,15 @@ var insert = require('./db').insert;
 var login = require('./db').login;
 app.use(express.static('public'));
 app.use(sess);
+
+app.use(function(req, res, next){
+  if(req.session.daDangNhap == undefined || req.session.daDangNhap == false){
+    req.session.daDangNhap = false;
+  }else{
+    req.session.daDangNhap++;
+  }
+  next();
+});
 
 app.get('/', function(req, res) {
     res.render('home');
@@ -39,7 +48,11 @@ app.get('/dangNhap', function(req, res) {
 });
 
 app.get('/giaodich', function(req, res){
-  res.send("Hay giao dich");
+  if(req.session.daDangNhap > 0){
+    res.send("Hay giao dich");
+  }else{
+    res.redirect('/dangNhap');
+  }
 });
 
 app.post('/xulydangnhap', parser, function(req, res) {
@@ -48,6 +61,7 @@ app.post('/xulydangnhap', parser, function(req, res) {
 
     login(username, password, function(kq) {
         if (kq == 1) {
+            req.session.daDangNhap = 1;
             res.redirect('/giaodich');
         } else if (kq == 2) {
             res.send('Kiem tra password');
