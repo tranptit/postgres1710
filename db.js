@@ -1,5 +1,6 @@
 var pg = require('pg');
 var encrypt = require('./crypto').encrypt;
+var decrypt = require('./crypto').decrypt;
 var config = {
   user: 'postgres',
   password: 'khoapham',
@@ -42,17 +43,21 @@ function insertUser(username, password, address, image, f1, f2){
   });
 }
 
-function login(username, password, onFail, onSuccess){
-  var sql = `SELECT * FROM "User" WHERE username='${username}' AND
-  password='${password}'`;
+function login(username, password, cb){
+  var sql = `SELECT * FROM "User" WHERE username='${username}'`;
   queryDB(sql, function(err, result){
     if(err){
       console.log(err);
     }else{
       if(result.rowCount == 1){
-        onSuccess();
+        var passDe = decrypt(result.rows[0].password);
+        if(passDe == password){
+          cb(1);//Thanh cong
+        }else{
+          cb(2);//Sai mat khau
+        }
       }else{
-        onFail();
+        cb(3);//username ko ton tai
       }
     }
   });

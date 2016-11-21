@@ -1,6 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var parser = bodyParser.urlencoded({extended: false})
+var parser = bodyParser.urlencoded({
+    extended: false
+})
 
 var app = express();
 app.listen(3000);
@@ -10,12 +12,12 @@ var insert = require('./db').insert;
 var login = require('./db').login;
 app.use(express.static('public'));
 
-app.get('/', function(req, res){
-  res.render('home');
+app.get('/', function(req, res) {
+    res.render('home');
 });
 
-app.get('/dangNhap', function(req, res){
-  res.send( `
+app.get('/dangNhap', function(req, res) {
+    res.send(`
     <form action="/xulydangnhap" method="post">
       <input type="text" placeholder="username" name="username"/><br><br>
       <input type="password" placeholder="password" name="password"/><br><br>
@@ -25,30 +27,33 @@ app.get('/dangNhap', function(req, res){
 });
 
 
-app.post('/xulydangnhap', parser, function(req, res){
-  var username = req.body.username;
-  var password = req.body.password;
+app.post('/xulydangnhap', parser, function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
 
-  login(username, password, function(){//onFail
-      res.send('Dang nhap that bai');
-  },
-  function(){//onSuccess
-      res.send('Dang nhap thanh cong');
-  })
+    login(username, password, function(kq) {
+        if (kq == 1) {
+            res.send('Dang ky thang cong');
+        } else if (kq == 2) {
+            res.send('Kiem tra password');
+        } else if (kq == 3) {
+            res.send('Username khong ton tai');
+        }
+    });
 });
 
 var upload = require('./upload.js')('avatar');
-app.post('/dangky', parser, function(req, res){
-  upload(req, res, function(err){
-    var username = req.body.username;
-    var password = req.body.password;
-    var address = req.body.address;
-    var image = req.file.filename;
+app.post('/dangky', parser, function(req, res) {
+    upload(req, res, function(err) {
+        var username = req.body.username;
+        var password = req.body.password;
+        var address = req.body.address;
+        var image = req.file.filename;
 
-    insert(username, password, address, image, function(){
-      res.send('Dang ky khong thanh cong');
-    }, function(){
-      res.send('Dang ky thanh cong');
+        insert(username, password, address, image, function() {
+            res.send('Dang ky khong thanh cong');
+        }, function() {
+            res.send('Dang ky thanh cong');
+        });
     });
-  });
 });
