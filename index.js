@@ -1,16 +1,28 @@
 var express = require('express');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var parser = bodyParser.urlencoded({
     extended: false
 })
 
+var sess = session(
+  {
+    secret: '2wh73&5g3hG67342',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {maxAge: 10000}
+  }
+);
+
+
 var app = express();
-app.listen(3000);
+app.listen(3001);
 app.set('view engine', 'ejs');
 app.set('views', './views');
 var insert = require('./db').insert;
 var login = require('./db').login;
 app.use(express.static('public'));
+app.use(sess);
 
 app.get('/', function(req, res) {
     res.render('home');
@@ -26,6 +38,9 @@ app.get('/dangNhap', function(req, res) {
   `)
 });
 
+app.get('/giaodich', function(req, res){
+  res.send("Hay giao dich");
+});
 
 app.post('/xulydangnhap', parser, function(req, res) {
     var username = req.body.username;
@@ -33,7 +48,7 @@ app.post('/xulydangnhap', parser, function(req, res) {
 
     login(username, password, function(kq) {
         if (kq == 1) {
-            res.send('Dang ky thang cong');
+            res.redirect('/giaodich');
         } else if (kq == 2) {
             res.send('Kiem tra password');
         } else if (kq == 3) {
